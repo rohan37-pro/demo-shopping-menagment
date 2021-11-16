@@ -43,13 +43,12 @@ class shopping_data_entry:
 		self.check_file()
 		print("loading contents...")
 		self.contents = self.load()
-		print(self.contents)
 		self.wrt_json()
 		self.data_entry()
 
 	
 	def data_entry(self):
-		prt = """'new' for data entry\n'show' to see today's data\n'quit' to exit """
+		prt = """\n'--help' how to use\n"""
 		print(prt)
 		while True:
 			mode = input(">>> ")
@@ -58,33 +57,61 @@ class shopping_data_entry:
 			if mode == "new":
 				name = input('enter name : ')
 				quantity = input("enter quantity : ")
-				cost = int(input("enter the cost : "))
-				quantity = self.unite_conv(quantity)
-				today = self.contents[self.date]
-				if name in today:
+				try:
+					cost = int(input("enter the cost : "))
+				except:
+					cost = 0
+				try:
+					name = search(r"[a-zA-Z]+",name).group(0)
+				except:
+					name = ""
+				
+				if name == "":
+					pass
+
+				elif quantity == "":
+					print("ERROR: please put somthing in quantity :)")
+				
+				elif name in today:
+					quantity = self.unite_conv(quantity)
+					today = self.contents[self.date]
 					lis  = today[name]
 					qnty = lis[0]
 
 					quantity_add = float(search(r"\d*[.]*\d*",qnty).group(0)) + float(search(r"\d*[.]*\d*",quantity).group(0))
-					unit = search("[a-zA-Z]+",quantity).group(0)
-			
-					lis[0] = f"{quantity_add} {unit}"
+					try:
+						unite = search("[a-zA-Z]+",quantity).group(0)
+					except:
+						unite = ''
+
+					lis[0] = f"{quantity_add} {unite}"
 					lis[1] += cost
 					lis[2] = date_time.time()
 					self.contents[self.date][name] = lis 
 					self.wrt_json()
 
-				if name not in today:
+
+				elif name not in today:
+					quantity = self.unite_conv(quantity)
+					today = self.contents[self.date]
 					self.contents[self.date][name] = [quantity,cost,date_time.time()]
 					self.wrt_json()
+
 
 			if mode=="show":
 				print(json.dumps(self.contents[self.date]))
 
+			if mode=="--help":
+				prt = """\n'new' to insert new data\n'show' to see today's data\n'quit' to exit\n"""
+				print(prt)
+
 
 	def unite_conv(self,quantity):
 		amount = float(search(r'\d*[.]*\d*',quantity).group(0))
-		unite = search(r'[a-zA-Z]+',quantity).group(0)
+		try:
+			unite = search(r'[a-zA-Z]+',quantity).group(0)
+		except:
+			unite = ""
 		if unite == "gram" or unite == "g":
 			amount /= 1000
 			unite = 'kg'
