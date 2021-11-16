@@ -125,4 +125,6 @@ class shopping_data_entry:
 				json.dump(dummy_dick,file)
 
 
-shop = shopping_data_entry()
+#function call
+if __name__ == '__main__':
+	shop = shopping_data_entry()
