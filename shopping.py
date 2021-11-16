@@ -79,12 +79,12 @@ class shopping_data_entry:
 					self.wrt_json()
 
 			if mode=="show":
-				print(json.dumps(self.contents))
+				print(json.dumps(self.contents[self.date]))
 
 
 	def unite_conv(self,quantity):
 		amount = float(search(r'\d*[.]*\d*',quantity).group(0))
-		unite = search(r'[a-zA-Z]+').group(0)
+		unite = search(r'[a-zA-Z]+',quantity).group(0)
 		if unite == "gram" or unit == "g":
 			amount /= 1000
 			unite = 'kg'
