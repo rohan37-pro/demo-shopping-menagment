@@ -59,6 +59,7 @@ class shopping_data_entry:
 				name = input('enter name : ')
 				quantity = input("enter quantity : ")
 				cost = int(input("enter the cost : "))
+				quantity = self.unite_conv(quantity)
 				today = self.contents[self.date]
 				if name in today:
 					lis  = today[name]
@@ -79,6 +80,19 @@ class shopping_data_entry:
 
 			if mode=="show":
 				print(json.dumps(self.contents))
+
+
+	def unite_conv(self,quantity):
+		amount = float(search(r'\d*[.]*\d*',quantity).group(0))
+		unite = search(r'[a-zA-Z]+').group(0)
+		if unite == "gram" or unit == "g":
+			amount /= 1000
+			unite = 'kg'
+
+		quantity = f"{amount} {unite}"
+		return quantity
+
+
 
 
 	def wrt_json(self):
