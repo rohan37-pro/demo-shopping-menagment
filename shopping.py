@@ -65,7 +65,7 @@ class shopping_data_entry:
 					lis  = today[name]
 					qnty = lis[0]
 
-					quantity_add = float(search(r"\d*",qnty).group(0)) + float(search(r'\d*',quantity).group(0))
+					quantity_add = float(search(r"\d*[.]*\d*",qnty).group(0)) + float(search(r"\d*[.]*\d*",quantity).group(0))
 					unit = search("[a-zA-Z]+",quantity).group(0)
 			
 					lis[0] = f"{quantity_add} {unit}"
@@ -85,7 +85,7 @@ class shopping_data_entry:
 	def unite_conv(self,quantity):
 		amount = float(search(r'\d*[.]*\d*',quantity).group(0))
 		unite = search(r'[a-zA-Z]+',quantity).group(0)
-		if unite == "gram" or unit == "g":
+		if unite == "gram" or unite == "g":
 			amount /= 1000
 			unite = 'kg'
 
