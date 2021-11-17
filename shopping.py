@@ -52,20 +52,21 @@ class shopping_data_entry:
 		print(prt)
 		while True:
 			mode = input(">>> ")
+			mode = mode.strip()
+
 			if mode == "quit":
 				break
+
 			if mode == "new":
 				name = input('enter name : ')
-				quantity = input("enter quantity : ")
+				quantity = input("enter quantity : ").strip()
+				today = self.contents[self.date]
 				try:
 					cost = int(input("enter the cost : "))
 				except:
 					cost = 0
-				try:
-					name = search(r"[a-zA-Z]+",name).group(0)
-				except:
-					name = ""
 				
+				name = name.strip()	
 				if name == "":
 					pass
 
@@ -74,7 +75,6 @@ class shopping_data_entry:
 				
 				elif name in today:
 					quantity = self.unite_conv(quantity)
-					today = self.contents[self.date]
 					lis  = today[name]
 					qnty = lis[0]
 
@@ -93,7 +93,6 @@ class shopping_data_entry:
 
 				elif name not in today:
 					quantity = self.unite_conv(quantity)
-					today = self.contents[self.date]
 					self.contents[self.date][name] = [quantity,cost,date_time.time()]
 					self.wrt_json()
 
