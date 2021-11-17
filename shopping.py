@@ -51,7 +51,7 @@ class shopping_data_entry:
 		prt = """\n'--help' how to use\n"""
 		print(prt)
 		while True:
-			mode = input(">>> ")
+			mode = input("./shopping.py> ")
 			mode = mode.strip()
 
 			if mode == "quit":
@@ -106,7 +106,10 @@ class shopping_data_entry:
 
 
 	def unite_conv(self,quantity):
-		amount = float(search(r'\d*[.]*\d*',quantity).group(0))
+		try:
+			amount = float(search(r'\d*[.]*\d*',quantity).group(0))
+		except:
+			amount = 0.0
 		try:
 			unite = search(r'[a-zA-Z]+',quantity).group(0)
 		except:
