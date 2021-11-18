@@ -34,7 +34,7 @@ class date_time:
 
 
 
-class shopping_data_entry:
+class shopping:
 
 	def __init__(self):
 		self.date = date_time.date()
@@ -58,7 +58,7 @@ class shopping_data_entry:
 				break
 
 			if mode == "new":
-				name = input('enter name : ')
+				name = input('enter name : ').strip()
 				quantity = input("enter quantity : ").strip()
 				today = self.contents[self.date]
 				try:
@@ -66,7 +66,6 @@ class shopping_data_entry:
 				except:
 					cost = 0
 				
-				name = name.strip()	
 				if name == "":
 					pass
 
@@ -100,9 +99,42 @@ class shopping_data_entry:
 			if mode=="show":
 				print(json.dumps(self.contents[self.date]))
 
+			if mode == "delete":
+				self.deletion_mode()
+
+			if mode == "modify":
+				self.modification_mode()
+
 			if mode=="--help":
-				prt = """\n'new' to insert new data\n'show' to see today's data\n'quit' to exit\n"""
+				prt = """\n'new' to insert new data\n'show' to see today's data\n'quit' to exit\ndelete to enter in deletion mode\nmodify to enter modification mode\n"""
 				print(prt)
+
+
+
+	def deletion_mode(self):
+		print("\ndeletion mode !!!!\n")
+		name = input("enter product name : ").strip()
+		try:
+			del self.contents[self.date][name]
+			self.wrt_json()
+			print(f"product {name} deleted successfully !!!\n")
+		except:
+			print(f'sorry ! the product {name} is not exists\n')
+
+
+	def modification_mode(self):
+		print("\nmodification mode !!!\n'--help to see usage\n")
+		while True:
+			mode = input("@modification/$ ")
+			if mode == "--help":
+				prt = """\nquit to exit from modification mode\n"mod name" to modify product name\n """
+				print(prt)
+			if mode == "mod name":
+				name_old = input("enter old product name : ").strip()
+				name_new = input("enter new product name : ").strip()
+			if mode == "quit":
+				break
+
 
 
 	def unite_conv(self,quantity):
@@ -120,8 +152,6 @@ class shopping_data_entry:
 
 		quantity = f"{amount} {unite}"
 		return quantity
-
-
 
 
 	def wrt_json(self):
@@ -156,4 +186,4 @@ class shopping_data_entry:
 
 #function call
 if __name__ == '__main__':
-	shop = shopping_data_entry()
+	shop = shopping()
