@@ -108,7 +108,7 @@ class shopping:
 				self.modification_mode()
 
 			if mode=="--help":
-				prt = """\n'new' to insert new data\n'show' to see today's data\n'quit' to exit\ndelete to enter in deletion mode\nmodify to enter modification mode\n"""
+				prt = """\n'new' to insert new data\n'show' to see today's data\n'quit' to exit\n'delete' to enter in deletion mode\n'modify' to enter modification mode\n"""
 				print(prt)
 
 
@@ -130,7 +130,7 @@ class shopping:
 		while True:
 			mode = input("@modification/$ ")
 			if mode == "--help":
-				prt = """\nquit to exit from modification mode\n"name" to modify product name\n"quantity" to modify quantity of a product\n"cost" to modify cost\n"mod" to modify the all at a time"""
+				prt = """\n'quit' to exit from modification mode\n"name" to modify product name\n"quantity" to modify quantity of a product\n"cost" to modify cost\n"mod" to modify the all at a time\n"""
 				print(prt)
 			if mode == "name":
 				name_old = input("enter old product name : ").strip()
@@ -149,9 +149,13 @@ class shopping:
 				if quantity == "":
 					print("ERROR: please put somthing in quantity :)")
 				try:
-					quantity = self.unite_conv()
+					quantity = self.unite_conv(quantity)
 					info = self.contents[self.date][name]
-					info[0] = quantity
+					try:
+						unite = search(r'[a-zA-Z]+',info[0]).group(0)
+					except:
+						unite = ""
+					info[0] = f"{quantity} {unite}"
 					info[2] = date_time.time()
 					self.contents[self.date][name] = info
 					self.wrt_json()
@@ -160,7 +164,7 @@ class shopping:
 			if mode == "cost":
 				name = input("enter name of the product : ").strip()
 				try:
-					cost = int(input("enter modified cost : ")).strip()
+					cost = int(input("enter modified cost : ").strip())
 				except:
 					cost = 0
 				try:
@@ -173,13 +177,13 @@ class shopping:
 					print(f"ERROR:name {name} is not found !!!")
 			if mode == "mod":
 				name_old = input("enter old name of product : ").strip()
-				exist = self.delete(name)
+				exist = self.delete(name_old)
 				if exist == False:
 					pass
 				elif exist == True:
 					name_new = input("enter new name : ").strip()
 					quantity = input("enter new quantity : ").strip()
-					quantity = unite_conv(quantity)
+					quantity = self.unite_conv(quantity)
 					try:
 						cost = int(input("enter cost : "))
 					except:
@@ -193,18 +197,29 @@ class shopping:
 
 	def unite_conv(self,quantity):
 		try:
-			amount = float(search(r'\d*[.]*\d*',quantity).group(0))
+			quant = float(search(r'\d*[.]*\d*',quantity).group(0))
 		except:
-			amount = 0.0
+			quant = 0.0
 		try:
 			unite = search(r'[a-zA-Z]+',quantity).group(0)
 		except:
 			unite = ""
+
+
 		if unite == "gram" or unite == "g":
-			amount /= 1000
+			quant /= 1000
 			unite = 'kg'
 
-		quantity = f"{amount} {unite}"
+		if unite == "packet" or unite == "packets":
+			try:
+				pie = input('how many pieces are there in one packet : ').strip()
+				pie = int(float(pie))
+				pie = int(quant*pie)
+			except:
+				pie = 1.0
+			quant = pie
+			unite = 'pieces'
+		quantity = f"{quant} {unite}"
 		return quantity
 
 
