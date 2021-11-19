@@ -100,7 +100,9 @@ class shopping:
 				print(json.dumps(self.contents[self.date]))
 
 			if mode == "delete":
-				self.deletion_mode()
+				print("\ndeletion mode !!!!\n")
+				name = input("enter product name : ").strip()
+				self.delete(name,p=True)
 
 			if mode == "modify":
 				self.modification_mode()
@@ -111,15 +113,16 @@ class shopping:
 
 
 
-	def deletion_mode(self):
-		print("\ndeletion mode !!!!\n")
-		name = input("enter product name : ").strip()
+	def delete(self,name,p=False):
 		try:
 			del self.contents[self.date][name]
 			self.wrt_json()
-			print(f"product {name} deleted successfully !!!\n")
+			if p== True:
+				print(f"product {name} deleted successfully !!!\n")
+			return True
 		except:
 			print(f'sorry ! the product {name} is not exists\n')
+			return False
 
 
 	def modification_mode(self):
@@ -127,11 +130,62 @@ class shopping:
 		while True:
 			mode = input("@modification/$ ")
 			if mode == "--help":
-				prt = """\nquit to exit from modification mode\n"mod name" to modify product name\n """
+				prt = """\nquit to exit from modification mode\n"name" to modify product name\n"quantity" to modify quantity of a product\n"cost" to modify cost\n"mod" to modify the all at a time"""
 				print(prt)
-			if mode == "mod name":
+			if mode == "name":
 				name_old = input("enter old product name : ").strip()
 				name_new = input("enter new product name : ").strip()
+				try:
+					info = self.contents[self.date][name_old]
+					info[2] = date_time.time()
+					del self.contents[self.date][name_old]
+					self.contents[self.date][name_new] = info
+					self.wrt_json()
+				except:
+					print(f"ERROR:name {name_old} is not found !!!")
+			if mode == "quantity":
+				name = input("enter name of the product : ").strip()
+				quantity = input("enter new quantity : ").strip()
+				if quantity == "":
+					print("ERROR: please put somthing in quantity :)")
+				try:
+					quantity = self.unite_conv()
+					info = self.contents[self.date][name]
+					info[0] = quantity
+					info[2] = date_time.time()
+					self.contents[self.date][name] = info
+					self.wrt_json()
+				except:
+					print(f"ERROR:name {name} is not found !!!")
+			if mode == "cost":
+				name = input("enter name of the product : ").strip()
+				try:
+					cost = int(input("enter modified cost : ")).strip()
+				except:
+					cost = 0
+				try:
+					info = self.contents[self.date][name]
+					info[1] = cost
+					info[2] = date_time.time()
+					self.contents[self.date][name] = info
+					self.wrt_json()
+				except:
+					print(f"ERROR:name {name} is not found !!!")
+			if mode == "mod":
+				name_old = input("enter old name of product : ").strip()
+				exist = self.delete(name)
+				if exist == False:
+					pass
+				elif exist == True:
+					name_new = input("enter new name : ").strip()
+					quantity = input("enter new quantity : ").strip()
+					quantity = unite_conv(quantity)
+					try:
+						cost = int(input("enter cost : "))
+					except:
+						cost = 0 
+					self.contents[self.date][name_new] = [quantity,cost,date_time.time()]
+					self.wrt_json()
 			if mode == "quit":
 				break
 
